@@ -12,7 +12,7 @@ private:
 	Player dealer;
 	bool dealerIsHuman;
 public:
-	Game(int brojHumanPlay, bool dealerIsHunam);
+	Game(int brojHumanPlay, bool dealerIsHunam, std::string dealername, std::vector<std::string> humannames, std::vector<std::string> npcnames);
 	void dealCards();
 	void play();
 private:
@@ -20,5 +20,6 @@ private:
 	int drawCard();
 	void rotatePlayers();
 	void nonDealerPick();
+	void waitForUser();
 };
 #endif // !GAME_HPP

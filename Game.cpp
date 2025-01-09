@@ -1,14 +1,15 @@
 #include "Game.hpp"
 
-Game::Game(int brojHumanPlay, bool dealerIsHunam) :dealer("Dealer", !dealerIsHunam), dealerIsHuman(dealerIsHuman) {
+Game::Game(int brojHumanPlay, bool dealerIsHunam, std::string dealername, std::vector<std::string> humannames, std::vector<std::string> npcnames) :dealer(dealername, !dealerIsHunam), dealerIsHuman(dealerIsHuman) {
 	resetDeck();
 	for (int i = 1;i <= brojHumanPlay;++i) {
-		players.emplace_back("Player " + std::to_string(i));
+		players.emplace_back(humannames.at(i - 1));
 	}
-	for (int i = brojHumanPlay;i < 4;++i) {
-		players.emplace_back("NPC " + std::to_string(i-brojHumanPlay),true);
+	for (int i = 0;i < 3 - brojHumanPlay;++i) {
+		players.emplace_back(npcnames.at(i), true);
 	}
 }
+
 void Game::resetDeck()
 {
 	std::random_device rd;
@@ -37,14 +38,14 @@ void Game::dealCards()
 void Game::nonDealerPick()
 {
 	std::vector<int>cards;
-	for (size_t i = 0;i < players.size();++i)
+	for (size_t i = 0;i < players.size()+1;++i)
 	{
 		cards.push_back(drawCard());
 	}
 	for (auto& player : players)
 	{
 		std::cout << player.getName() << "'s time to pick cards:\n";
-		std::cout << "Available pairs: ";
+		std::cout << "Available cards: ";
 		for (size_t j = 0;j < cards.size();++j)
 		{
 			std::cout << "[" << j + 1 << "] (" << cards.at(j) << ") ";
@@ -59,10 +60,10 @@ void Game::nonDealerPick()
 		}
 		else {
 			int choice;
-			std::cout << "Pick a pair by entering its number: ";
+			std::cout << "Pick a card by entering its number: ";
 			std::cin >> choice;
 			while (choice < 1 || choice > static_cast<int>(cards.size())) {
-				std::cout << "Invalid choice. Pick a pair by entering its number: ";
+				std::cout << "Invalid choice. Pick a card by entering its number: ";
 				std::cin >> choice;
 			}
 			player.addCard(cards[choice - 1]);
@@ -71,6 +72,13 @@ void Game::nonDealerPick()
 
 	}
 }
+void Game::waitForUser()
+{
+	std::cout << "Press Enter to continue..." << std::endl;
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::cin.get();
+
+}
 void Game::rotatePlayers()
 {
 	players.push_back(dealer);
@@ -78,11 +86,7 @@ void Game::rotatePlayers()
 	players.erase(players.begin());
 }
 void Game::play() {
-	for (const auto& player : players)
-	{
-		std::cout << player.getisNPC()<<std::endl;
-	}
-	for (int round = 1;round <= 5;++round)
+	for (int round = 1;round <= 4;++round)
 	{
 		std::cout << "\n---Round " << round << " ---\n";
 		resetDeck();
@@ -95,10 +99,14 @@ void Game::play() {
 		for (auto& player : players)
 		{
 			player.printHand();
+			if (((player.getHand().at(0) == 9 || player.getHand().at(0) == 4) && player.getHand().at(1) == 1)){
+				break;
+			}
 			if (player.getisNPC()) {
 				if (player.getScore() <= 3) {
 					std::cout << player.getName() << " decides to take another card." << std::endl;
 					player.addCard(drawCard());
+					player.printHand();
 				}
 				else if (player.getScore()>=7) {
 					std::cout << player.getName() << " decides to stop." << std::endl;
@@ -108,6 +116,7 @@ void Game::play() {
 					int choice = std::rand() % 2;
 					if (choice) {
 						player.addCard(drawCard());
+						player.printHand();
 					}
 					else {
 						std::cout << player.getName() << " decides to stop." << std::endl;
@@ -116,11 +125,12 @@ void Game::play() {
 			}
 			else {
 				if (player.getScore() <= 3) {
-					std::cout << player.getName() << " decides to take another card." << std::endl;
+					std::cout << player.getName() << " has to take another card." << std::endl;
 					player.addCard(drawCard());
+					player.printHand();
 				}
 				else if (player.getScore() >= 7) {
-					std::cout << player.getName() << " decides to stop." << std::endl;
+					std::cout << player.getName() << " has to stop." << std::endl;
 					break;
 				}
 				else {
@@ -129,6 +139,7 @@ void Game::play() {
 					std::cin >> choice;
 					if (choice == 'y' || choice == 'Y') {
 						player.addCard(drawCard());
+						player.printHand();
 					}
 					else {
 						std::cout << player.getName() << " decided to stop." << std::endl;
@@ -201,12 +212,13 @@ void Game::play() {
 				player.setbrPobjeda(player.getbrPobjeda() + 1);
 			}
 			else if (player.getScore() < dealerScore){
-				std::cout << "Too bad " << player.getName() << " you lost\n"<<"Congrats Dealer"<<std::endl;
+				std::cout << "Too bad " << player.getName() << " you lost	"<<"Congrats "<<dealer.getName()<<" you won" << std::endl;
 				dealer.setbrPobjeda(dealer.getbrPobjeda() + 1);
 			}
 			else
 				std::cout <<player.getName()<<": " << "It's a tie" << std::endl;
 		}
+		waitForUser();
 		rotatePlayers();
 	}
 	std::vector<int> svi;
