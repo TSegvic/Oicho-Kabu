@@ -79,6 +79,30 @@ void Game::waitForUser()
 	std::cin.get();
 
 }
+void Game::decide_winner()
+{
+	for (auto& player : players)
+	{
+		player.printHand();
+		player.seeIfCombo();
+	}
+	dealer.printHand();
+	dealer.seeIfCombo();
+	int dealerScore = dealer.getScore();
+	std::cout << "\nDealer's score is: " << dealerScore << std::endl;
+	for (auto& player : players) {
+		if ((player.getScore() > dealerScore||player.gethasWinCombo())&&!dealer.gethasWinCombo()) {
+			std::cout << "Congrats " << player.getName() << " you won\n";
+			player.setbrPobjeda(player.getbrPobjeda() + 1);
+		}
+		else if (player.getScore() < dealerScore||dealer.gethasWinCombo()) {
+			std::cout << "Too bad " << player.getName() << " you lost	" << "Congrats " << dealer.getName() << " you won" << std::endl;
+			dealer.setbrPobjeda(dealer.getbrPobjeda() + 1);
+		}
+		else
+			std::cout << player.getName() << ": " << "It's a tie" << std::endl;
+	}
+}
 void Game::rotatePlayers()
 {
 	players.push_back(dealer);
@@ -99,11 +123,13 @@ void Game::play() {
 		for (auto& player : players)
 		{
 			player.printHand();
-			if (((player.getHand().at(0) == 9 || player.getHand().at(0) == 4) && player.getHand().at(1) == 1)){
-				break;
-			}
+			player.seeIfCombo();
 			if (player.getisNPC()) {
-				if (player.getScore() <= 3) {
+				if (player.gethasWinCombo()){
+					std::cout << player.getName() << " decides to stop." << std::endl;
+					break;
+				}
+				else if (player.getScore() <= 3) {
 					std::cout << player.getName() << " decides to take another card." << std::endl;
 					player.addCard(drawCard());
 					player.printHand();
@@ -124,7 +150,20 @@ void Game::play() {
 				}
 			}
 			else {
-				if (player.getScore() <= 3) {
+				if (player.gethasWinCombo()) {
+					std::cout << std::endl << player.getName() << " your score is: " << player.getScore() << " do you want to take a card? (y/n): ";
+					char choice;
+					std::cin >> choice;
+					if (choice == 'y' || choice == 'Y') {
+						player.addCard(drawCard());
+						player.printHand();
+					}
+					else {
+						std::cout << player.getName() << " decided to stop." << std::endl;
+						break;
+					}
+				}
+				else if (player.getScore() <= 3) {
 					std::cout << player.getName() << " has to take another card." << std::endl;
 					player.addCard(drawCard());
 					player.printHand();
@@ -199,25 +238,7 @@ void Game::play() {
 				}
 			}
 		}
-		for (const auto& player : players)
-		{
-			player.printHand();
-		}
-		dealer.printHand();
-		int dealerScore = dealer.getScore();
-		std::cout << "\nDealer's score is: " << dealerScore<<std::endl;
-		for (auto& player : players) {
-			if (player.getScore() > dealerScore){
-				std::cout << "Congrats " << player.getName() << " you won\n";
-				player.setbrPobjeda(player.getbrPobjeda() + 1);
-			}
-			else if (player.getScore() < dealerScore){
-				std::cout << "Too bad " << player.getName() << " you lost	"<<"Congrats "<<dealer.getName()<<" you won" << std::endl;
-				dealer.setbrPobjeda(dealer.getbrPobjeda() + 1);
-			}
-			else
-				std::cout <<player.getName()<<": " << "It's a tie" << std::endl;
-		}
+		decide_winner();
 		waitForUser();
 		rotatePlayers();
 	}

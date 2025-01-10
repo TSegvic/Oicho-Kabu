@@ -76,3 +76,29 @@ void Player::setbrPobjeda(int i)
 	brPobjeda = i;
 }
 
+void Player::sethasWinCombo(bool has)
+{
+	hasWinCombo = has;
+}
+
+bool Player::gethasWinCombo()
+{
+	return hasWinCombo;
+}
+
+void Player::seeIfCombo()
+{
+	if (hand.size() == 2)
+	{
+		if ((hand.at(0) == 4 || hand.at(0) == 9) && hand.at(1) == 1)
+		{
+			hasWinCombo = true;
+		}
+	}
+	else if(hand.size()==3)
+	{
+		if (hand.at(0) == hand.at(1) && hand.at(0) == hand.at(2))
+			hasWinCombo = true;
+	}
+}
+

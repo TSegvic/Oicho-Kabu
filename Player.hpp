@@ -10,6 +10,7 @@ private:
 	std::vector<int> hand;
 	int brPobjeda=0;
 	bool isNPC;
+	bool hasWinCombo=false;
 public:
 	Player(const std::string& name, bool isNPC = false);
 	void addCard(int card);
@@ -24,5 +25,8 @@ public:
 	const std::vector<int>& getHand() const;
 	int getbrPobjeda()const;
 	void setbrPobjeda(int i);
+	void sethasWinCombo(bool has);
+	bool gethasWinCombo();
+	void seeIfCombo();
 };
 #endif // !PLAYER_HPP

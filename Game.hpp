@@ -21,5 +21,7 @@ private:
 	void rotatePlayers();
 	void nonDealerPick();
 	void waitForUser();
+	void decide_winner();
+	
 };
 #endif // !GAME_HPP
