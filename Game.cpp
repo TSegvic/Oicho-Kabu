@@ -1,6 +1,6 @@
 #include "Game.hpp"
 
-Game::Game(int brojHumanPlay, bool dealerIsHunam, std::string dealername, std::vector<std::string> humannames, std::vector<std::string> npcnames) :dealer(dealername, !dealerIsHunam), dealerIsHuman(dealerIsHuman) {
+Game::Game(int brojHumanPlay, bool dealerIsHunam, std::string dealername, std::vector<std::string> humannames, std::vector<std::string> npcnames) :dealer(dealername, !dealerIsHunam){
 	resetDeck();
 	for (int i = 1;i <= brojHumanPlay;++i) {
 		players.emplace_back(humannames.at(i - 1));
@@ -122,6 +122,11 @@ void Game::play() {
 		dealCards();
 		for (auto& player : players)
 		{
+			if (player.getName() == "Gusti")
+			{
+				player.postaviDobitak();
+				
+			}
 			player.printHand();
 			player.seeIfCombo();
 			if (player.getisNPC()) {
@@ -157,6 +162,7 @@ void Game::play() {
 					if (choice == 'y' || choice == 'Y') {
 						player.addCard(drawCard());
 						player.printHand();
+						break;
 					}
 					else {
 						std::cout << player.getName() << " decided to stop." << std::endl;
@@ -188,53 +194,42 @@ void Game::play() {
 			}
 		}
 		dealer.addCard(drawCard());
-		while (true) {
-			dealer.printHand();
-			if (dealerIsHuman) {
-				if (dealer.getScore() <= 3) {
-					std::cout << dealer.getName() << " decides to take another card." << std::endl;
-					dealer.addCard(drawCard());
-					break;
-				}
-				else if (dealer.getScore() >= 7) {
-					std::cout << dealer.getName() << " decides to stop." << std::endl;
-					break;
-				}
-				else {
-					std::cout << std::endl << dealer.getName() << " your score is: " << dealer.getScore() << " do you want to take a card? (y/n): ";
-					char choice;
-					std::cin >> choice;
-					if (choice == 'y' || choice == 'Y') {
-						dealer.addCard(drawCard());
-						break;
-					}
-					else {
-						std::cout << dealer.getName() << " decided to stop." << std::endl;
-						break;
-					}
-				}
+		dealer.printHand();
+		if (!dealer.getisNPC()) {
+			if (dealer.getScore() <= 3) {
+				std::cout << dealer.getName() << " decides to take another card." << std::endl;
+				dealer.addCard(drawCard());
+			}
+			else if (dealer.getScore() >= 7) {
+				std::cout << dealer.getName() << " decides to stop." << std::endl;
 			}
 			else {
-				if (dealer.getScore() <= 3) {
-					std::cout << dealer.getName() << " decides to take another card." << std::endl;
+				std::cout << std::endl << dealer.getName() << " your score is: " << dealer.getScore() << " do you want to take a card? (y/n): ";
+				char choice;
+				std::cin >> choice;
+				if (choice == 'y' || choice == 'Y') {
 					dealer.addCard(drawCard());
-					break;
-				}
-				else if (dealer.getScore() >= 7) {
-					std::cout << dealer.getName() << " decides to stop." << std::endl;
-					break;
 				}
 				else {
-					int choice = std::rand() % 2;
-					if (choice) {
-						dealer.addCard(drawCard());
-						break;
-					}
-					else {
-						std::cout << dealer.getName() << " decided to stop." << std::endl;
-						break;
-					}
-					break;
+					std::cout << dealer.getName() << " decided to stop." << std::endl;
+				}
+			}
+		}
+		else {
+			if (dealer.getScore() <= 3) {
+				std::cout << dealer.getName() << " decides to take another card." << std::endl;
+				dealer.addCard(drawCard());
+			}
+			else if (dealer.getScore() >= 7) {
+				std::cout << dealer.getName() << " decides to stop." << std::endl;
+			}
+			else {
+				int choice = std::rand() % 2;
+				if (choice) {
+					dealer.addCard(drawCard());
+				}
+				else {
+					std::cout << dealer.getName() << " decided to stop." << std::endl;
 				}
 			}
 		}
@@ -243,19 +238,40 @@ void Game::play() {
 		rotatePlayers();
 	}
 	std::vector<int> svi;
-	for (const auto& player : players)
-	{
+
+	
+	for (const auto& player : players) {
 		svi.push_back(player.getbrPobjeda());
 	}
 	svi.push_back(dealer.getbrPobjeda());
+
+	
 	int maksi = *std::max_element(svi.begin(), svi.end());
-	auto dis = std::distance(svi.begin(), std::max_element(svi.begin(), svi.end()));
-	if (dis == 5)
-	{
-		std::cout <<std::endl<< "The winner is " << dealer.getName() << " with " << dealer.getbrPobjeda() << " collective wins";
+
+	
+	std::vector<int> winners;
+	for (int i = 0; i < svi.size(); ++i) {
+		if (svi[i] == maksi) {
+			winners.push_back(i);
+		}
 	}
-	else {
-		std::cout << std::endl << "The winner is " << players.at(dis).getName() << " with " << players.at(dis).getbrPobjeda() << " collective wins";
+
+	
+	std::cout << "\nThe winners are:\n";
+	for (int index : winners) {
+		if (index == players.size()) { 
+			std::cout << dealer.getName() << " with " << dealer.getbrPobjeda() << " collective wins\n";
+		}
+		else {
+			std::cout << players.at(index).getName() << " with " << players.at(index).getbrPobjeda() << " collective wins\n";
+		}
 	}
-		 
+	
+
+	if (winners.size() == 1) {
+		std::cout << "\nOverall winner is "
+			<< (winners.front() == players.size() ? dealer.getName() : players.at(winners.front()).getName())
+			<< " with " << maksi << " collective wins!\n";
+	}
+	waitForUser();	 
 }

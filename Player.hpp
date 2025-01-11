@@ -28,5 +28,6 @@ public:
 	void sethasWinCombo(bool has);
 	bool gethasWinCombo();
 	void seeIfCombo();
+	void postaviDobitak();
 };
 #endif // !PLAYER_HPP

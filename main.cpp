@@ -42,7 +42,6 @@ int main() {
         std::cin >> name;
         humannames.push_back(name);
     }
-
     Game game(numHumanPlayers, dealerIsHuman,dealername,humannames,npcnames);
     game.play();
     return 0;

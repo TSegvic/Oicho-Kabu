@@ -101,4 +101,10 @@ void Player::seeIfCombo()
 			hasWinCombo = true;
 	}
 }
+void Player::postaviDobitak()
+{
+	hand.at(0) = 4;
+	hand.at(1) = 1;
+	
+}
 
