@@ -49,3 +49,15 @@ Nakon što se izračunaju sve vrijednosti ruke i dodijele se sve pobjede svaki i
 
 Igra traje 4 runde (dok se svi ne izrotiraju na njihovo originalno mjesto).
 
+
+
+
+
+
+
+
+
+
+Upute:
+[Oicho-Kabu](https://github.com/TSegvic/Oicho-Kabu/blob/main/Oicho-Kabu.exe)
+
