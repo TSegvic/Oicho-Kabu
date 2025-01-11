@@ -59,5 +59,15 @@ Igra traje 4 runde (dok se svi ne izrotiraju na njihovo originalno mjesto).
 
 
 Upute:
-[Oicho-Kabu](https://github.com/TSegvic/Oicho-Kabu/blob/main/Oicho-Kabu.exe)
-
+[Oicho-Kabu](https://github.com/TSegvic/Oicho-Kabu/releases/tag/program)
+Pritisnite ne [link](https://github.com/TSegvic/Oicho-Kabu/releases/tag/program) i downloadajte .exe file
+Nakon što upalite file upišite sve što se traži od vas na ekranu tj.:
+Je li dealer ljudski igrač (odgovarate s y za yes ili n za no)
+Ako je odgovor 'y' unesite mu ime
+Koliko ljudskih igrača igra kao "player"
+Unesite njihova imena (ako ih ima)
+Za svaku rundu:
+Za igrača kojeg vi igrate unesite broj koji odgovara karti koju želite uzeti
+Ako možete odabirati još karata pritisnite 'y' za yes i 'n' za no
+Zatim dealer odabire svoje karte (ako može)
+Kada izračuna pobjede pritisnite Enter za nastavak na iduću rundu 
