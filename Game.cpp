@@ -255,8 +255,13 @@ void Game::play() {
 			winners.push_back(i);
 		}
 	}
+	if (winners.size() == 1) {
+		std::cout << "\nOverall winner is "
+			<< (winners.front() == players.size() ? dealer.getName() : players.at(winners.front()).getName())
+			<< " with " << maksi << " collective wins!\n";
+	}
 
-	
+	else{
 	std::cout << "\nThe winners are:\n";
 	for (int index : winners) {
 		if (index == players.size()) { 
@@ -266,12 +271,8 @@ void Game::play() {
 			std::cout << players.at(index).getName() << " with " << players.at(index).getbrPobjeda() << " collective wins\n";
 		}
 	}
-	
-
-	if (winners.size() == 1) {
-		std::cout << "\nOverall winner is "
-			<< (winners.front() == players.size() ? dealer.getName() : players.at(winners.front()).getName())
-			<< " with " << maksi << " collective wins!\n";
 	}
+
+	
 	waitForUser();	 
 }
